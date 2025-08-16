@@ -1,16 +1,18 @@
-from flask import Flask, request, jsonify
+from flask import Flask, request
 
 app = Flask(__name__)
 
-current_data = "meaw to esp32"
+@app.route('/api', methods=['POST'])
+def api():
+    # If sent as JSON
+    json_data = request.get_json()
+    print("JSON Data:", json_data)
+
+    return {"status": "received"}, 200
 
 @app.route("/")
-def home():
-    return "ESP32 Communication Server is Running"
+def default():
+    return "Hello brother"
 
-@app.route("/get-data", methods=["GET","POST"])
-def get_data():
-    return current_data
-
-if __name__ == "__main__":
-    app.run(host="0.0.0.0", port=5000) 
+if __name__ == '__main__':
+    app.run(debug=True)
