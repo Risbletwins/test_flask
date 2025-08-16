@@ -1,5 +1,5 @@
-from flask import Flask
-import requests
+from flask import Flask, request
+
 
 app = Flask(__name__)
 
@@ -10,19 +10,19 @@ ESP32_URL = "http://192.168.10.160/"  # Replace with your ESP32's IP address
 def send_to_esp32():
     try:
         # Get JSON data from the incoming POST request
-        data = requests.get_json()
+        data = request.get_json()
         if not data:
             return {"error": "No JSON data provided"}, 400
 
         # Send POST request to ESP32
-        response = requests.post(ESP32_URL, json=data, timeout=5)
+        response = request.post(ESP32_URL, json=data, timeout=5)
         
         # Check response from ESP32
         if response.status_code == 200:
             return {"message": "POST request sent to ESP32 successfully", "esp32_response": response.json()}, 200
         else:
             return {"error": f"ESP32 request failed with status code {response.status_code}"}, response.status_code
-    except requests.exceptions.RequestException as e:
+    except request.exceptions.RequestException as e:
         return {"error": f"Request to ESP32 failed: {str(e)}"}, 500
 
 if __name__ == '__main__':
