@@ -1,4 +1,4 @@
-from flask import Flask, request
+from flask import Flask
 import requests
 
 app = Flask(__name__)
@@ -10,7 +10,7 @@ ESP32_URL = "http://192.168.10.160/"  # Replace with your ESP32's IP address
 def send_to_esp32():
     try:
         # Get JSON data from the incoming POST request
-        data = request.get_json()
+        data = requests.get_json()
         if not data:
             return {"error": "No JSON data provided"}, 400
 
