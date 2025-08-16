@@ -3,7 +3,7 @@
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1, user-scalable=no"/>
-  <title>চলাচল কন্ট্রোল</title>
+  <title>Seed Sowing System</title>
   <link href="https://fonts.googleapis.com/css2?family=Hind+Siliguri&display=swap" rel="stylesheet">
   <style>
     html, body {
@@ -72,6 +72,7 @@
       height: 100%;
       margin-left: 0;
       position: relative;
+      overflow: hidden;
     }
 
     header {
@@ -87,57 +88,46 @@
       text-shadow: 1px 1px 3px rgba(0,0,0,0.3);
     }
 
-    .joystick {
+    .control-area {
       flex: 1;
-      display: grid;
-      place-items: center;
-      position: relative;
-    }
-
-    .joystick-inner {
-      width: 250px;
-      height: 250px;
-      position: relative;
+      display: flex;
+      flex-direction: column;
+      justify-content: center;
+      align-items: center;
+      gap: 1.5rem;
     }
 
     .control-btn {
-      position: absolute;
-      padding: 1rem 1.4rem;
-      font-size: 1.1rem;
+      padding: 1.2rem 2rem;
+      font-size: 1.4rem;
       border: none;
-      border-radius: 50%;
+      border-radius: 12px;
       color: white;
       cursor: pointer;
       box-shadow: 0 4px 12px rgba(0,0,0,0.2);
       transition: transform 0.2s ease;
+      min-width: 180px;
+      text-align: center;
     }
 
-    .forward {
-      background-color: #388e3c;
-      top: 0;
-      left: 50%;
-      transform: translateX(-50%);
+    .control-btn:hover {
+      transform: scale(1.05);
     }
 
-    .backward {
+    .on-btn {
+      background-color: #2e7d32;
+    }
+
+    .on-btn:hover {
+      background-color: #1b5e20;
+    }
+
+    .off-btn {
       background-color: #c62828;
-      bottom: 0;
-      left: 50%;
-      transform: translateX(-50%);
     }
 
-    .left {
-      background-color: #1976d2;
-      left: 0;
-      top: 50%;
-      transform: translateY(-50%);
-    }
-
-    .right {
-      background-color: #f57c00;
-      right: 0;
-      top: 50%;
-      transform: translateY(-50%);
+    .off-btn:hover {
+      background-color: #a11414;
     }
 
     .menu-btn {
@@ -155,14 +145,14 @@
     }
 
     @media (max-width: 768px) {
-      .joystick-inner {
-        width: 180px;
-        height: 180px;
+      html, body {
+        max-width: 100vw;
       }
 
       .control-btn {
-        font-size: 0.9rem;
-        padding: 0.7rem 1rem;
+        font-size: 1.2rem;
+        padding: 1rem 1.5rem;
+        min-width: 150px;
       }
     }
   </style>
@@ -171,25 +161,25 @@
 
   <div class="container">
     <div class="sidebar" id="sidebar">
-      <h2>🌱 অপশন</h2>
-      <button class="tab-btn active">চলাচল</button>
-      <button class="tab-btn">বীজ বপন</button>
-      <button class="tab-btn">মাটি আর্দ্রতা</button>
+      <h2>অপশন</h2>
+        <a href="/"><button class="tab-btn">হোম</button></a>
+        <a href="/controller"><button class="tab-btn">কন্ট্রোলার</button></a>
+        <a href="/soil_moisture_measuring_system"><button class="tab-btn">মাটির আর্দ্রতা ব্যবস্থা</button></a>
+        <a href="/seed_sowing_system"><button class="tab-btn">কৃষি সহকারী</button></a>
+        <a href="/water_pump_system"><button class="tab-btn">পানি পাম্প ব্যবস্থা</button></a>
+        <a href="/humidity_measuring_system"><button class="tab-btn">তাপ ও পরিবেশের আদ্রতা<br>পরিমাপ ব্যবস্থা</button></a>
+        <a href="/chat"><button class="tab-btn">কৃষি সহকারী</button></a>
     </div>
 
     <div class="main-content">
       <button class="menu-btn" onclick="toggleSidebar()">☰</button>
       <header>
-        <h1>🤖 চলাচল কন্ট্রোল</h1>
+        <h1>বীজ বপন ব্যবস্থা</h1>
       </header>
 
-      <div class="joystick">
-        <div class="joystick-inner">
-          <button class="control-btn forward" onclick="move('forward')">⬆️</button>
-          <button class="control-btn backward" onclick="move('backward')">⬇️</button>
-          <button class="control-btn left" onclick="move('left')">⬅️</button>
-          <button class="control-btn right" onclick="move('right')">➡️</button>
-        </div>
+      <div class="control-area">
+        <button class="control-btn on-btn" onclick="sendData('on')">চালু</button>
+        <button class="control-btn off-btn" onclick="sendData('off')">বন্ধ</button>
       </div>
     </div>
   </div>
@@ -214,10 +204,17 @@
       }
     });
 
-    function move(direction) {
-      alert(`📡 "${direction}" এ পাঠানো হয়েছে`);
-      // Replace with: fetch(`/move?dir=${direction}`);
-    }
-  </script>
+    function sendData(txt) {
+  fetch('/seed_sowing_system/button', {
+    method: 'POST',
+    headers: {'Content-Type': 'application/json'},
+    body: JSON.stringify({msg: txt})
+  })
+  .then(response => response.json())
+  .then(data => {
+    document.getElementById("output").innerText = data.received.msg;
+  });
+}
+</script>
 </body>
 </html>

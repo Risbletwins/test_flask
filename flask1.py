@@ -8,7 +8,7 @@ current_data = "meaw to esp32"
 def home():
     return "ESP32 Communication Server is Running"
 
-@app.route("/get-data", methods=["GET"])
+@app.route("/get-data", methods=["GET","POST"])
 def get_data():
     return current_data
 
